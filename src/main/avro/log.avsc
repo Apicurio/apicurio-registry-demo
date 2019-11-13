@@ -1,0 +1,9 @@
+{"namespace": "io.apicurio.registry.demo.domain",
+ "type": "record",
+ "name": "LogInput",
+ "fields": [
+     {"name": "line", "type": "string"},
+     {"name": "timestamp",  "type": ["long", "null"]},
+     {"name": "identifier", "type": ["string", "null"]}
+ ]
+}

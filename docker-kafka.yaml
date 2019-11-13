@@ -1,0 +1,18 @@
+version: '2'
+services:
+  zookeeper:
+    container_name: zookeeper
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "storage-topic:1:1:compact,global-id-topic:1:1:compact,input-topic:1:1:compact,logx-topic:1:1:compact,dbx-topic:1:1:compact"

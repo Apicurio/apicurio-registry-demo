@@ -1,0 +1,192 @@
+# Start Strimzi (Kafka), Apicurio Registry and our Demo app
+# https://strimzi.io/quickstarts/minikube/
+# https://github.com/Apicurio/apicurio-registry
+apiVersion: kafka.strimzi.io/v1beta1
+kind: Kafka
+metadata:
+  namespace: kafka
+  name: my-cluster
+spec:
+  kafka:
+    version: 2.3.0
+    replicas: 1
+# Expose Kafka and its brokers with NodePort listener
+# https://strimzi.io/docs/latest/#proc-accessing-kafka-using-nodeports-deployment-configuration-kafka
+    listeners:
+      plain: {}
+      external:
+        type: nodeport
+        tls: false
+        overrides:
+          bootstrap:
+            nodePort: 32100
+    config:
+      offsets.topic.replication.factor: 1
+      transaction.state.log.replication.factor: 1
+      transaction.state.log.min.isr: 1
+      log.message.format.version: "2.3"
+    storage:
+      type: jbod
+      volumes:
+        - id: 0
+          type: persistent-claim
+          size: 100Gi
+          deleteClaim: false
+  zookeeper:
+    replicas: 1
+    storage:
+      type: persistent-claim
+      size: 100Gi
+      deleteClaim: false
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+---
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  namespace: kafka
+  name: storage-topic
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  namespace: kafka
+  name: global-id-topic
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  namespace: kafka
+  name: input-topic
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  namespace: kafka
+  name: logx-topic
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  namespace: kafka
+  name: dbx-topic
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    cleanup.policy: compact
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: registry
+  name: registry
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:
+        - image: alesj/apicurio-registry-streams
+          name: registry
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: my-cluster-kafka-bootstrap.kafka:9092
+            - name: APPLICATION_ID
+              value: registry_id
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: APPLICATION_SERVER
+              value: "$(POD_IP):9000"
+          resources:
+            limits:
+              memory: "1000Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: registry
+  name: registry
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 30080
+  selector:
+    app: registry
+  type: NodePort
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demo
+  name: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo
+  template:
+    metadata:
+      labels:
+        app: demo
+    spec:
+      containers:
+        - image: alesj/apicurio-registry-demo
+          name: demo
+          env:
+            - name: BOOTSTRAP_SERVERS
+              value: my-cluster-kafka-bootstrap.kafka:9092
+            - name: APPLICATION_ID
+              value: demo_id
+            - name: REGISTRY_URL
+              value: http://registry
+          resources:
+            limits:
+              memory: "1000Mi"

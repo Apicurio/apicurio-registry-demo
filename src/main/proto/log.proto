@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package io.apicurio.registry.demo.domain;
+
+option java_package = "io.apicurio.registry.demo.domain";
+
+option java_outer_classname = "Log";
+
+message LogMerge {
+    fixed64 fst = 1;
+    fixed64 snd = 2;
+    string info = 3;
+}
