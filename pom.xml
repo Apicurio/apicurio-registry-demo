@@ -67,16 +67,6 @@
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-streams</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.microprofile.config</groupId>
-      <artifactId>microprofile-config-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jackson2-provider</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
@@ -164,6 +154,87 @@
                 <configuration>
                   <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
                   <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>upload</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-maven-plugin</artifactId>
+            <version>${registry.version}</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>register</goal>
+                </goals>
+                <configuration>
+                  <registryUrl>http://localhost:8080</registryUrl>
+                  <artifactType>AVRO</artifactType>
+                  <artifacts>
+                    <schema1>${project.basedir}/schemas/schema1.avsc</schema1>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-maven-plugin</artifactId>
+            <version>${registry.version}</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>test-update</goal>
+                </goals>
+                <configuration>
+                  <registryUrl>http://localhost:8080</registryUrl>
+                  <artifactType>AVRO</artifactType>
+                  <artifacts>
+                    <schema1>${project.basedir}/schemas/schema2.avsc</schema1>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>download</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-maven-plugin</artifactId>
+            <version>${registry.version}</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>download</goal>
+                </goals>
+                <configuration>
+                  <registryUrl>http://localhost:8080</registryUrl>
+                  <ids>
+                    <param1>schema1</param1>
+                  </ids>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
                 </configuration>
               </execution>
             </executions>
