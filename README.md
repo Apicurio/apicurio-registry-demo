@@ -78,3 +78,13 @@ Run this 3 docker-compose yamls:
 * `docker-compose -f docker-demo.yaml up`
 
 Cleanup: `docker rm -f zookeeper kafka registry1 registry2 demo`
+
+## Running things with Kubernetes (minikube)
+
+You need to have `minikube` and `kubectl` installed locally. 
+
+* simply run our `strimzi.sh` script.
+
+* grab minikube IP: `minikube ip` --> <MINIKUBE_IP>
+
+* run TestMain with `-Dboostrap.servers=<MINIKUBE_IP>:32100 -Dregistry.url.1=<MINIKUBE_IP>:30080 -Dregistry.url.2=<MINIKUBE_IP>:30080`

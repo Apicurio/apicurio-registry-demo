@@ -189,7 +189,7 @@
       </build>
     </profile>
     <profile>
-      <id>compatibility</id>
+      <id>test</id>
       <build>
         <plugins>
           <plugin>
@@ -200,7 +200,7 @@
               <execution>
                 <phase>generate-sources</phase>
                 <goals>
-                  <goal>compatibility</goal>
+                  <goal>test-update</goal>
                 </goals>
                 <configuration>
                   <registryUrl>http://localhost:8080</registryUrl>
