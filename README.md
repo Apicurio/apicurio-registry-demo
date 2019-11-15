@@ -38,6 +38,35 @@ Avro serializer and deserializer use registry to get a hold of Avro schema in or
 In the test main we can see how we register the schema at one node, 
 whereas the serializer points to second node for lookup.
 
+### What about Registry Maven Plugin?
+
+Checkout our [pom.xml](https://github.com/Apicurio/apicurio-registry-demo/blob/master/pom.xml), its profiles, for the plugin usage.
+
+e.g. how to register a schema
+
+```xml
+          <plugin>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-registry-maven-plugin</artifactId>
+            <version>${registry.version}</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>register</goal>
+                </goals>
+                <configuration>
+                  <registryUrl>http://localhost:8080</registryUrl>
+                  <artifactType>AVRO</artifactType>
+                  <artifacts>
+                    <schema1>${project.basedir}/schemas/schema1.avsc</schema1>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+```
+
 ## What's there to see?
 
 In the main's console you should see `INFO: Merged logs: fst: 1572428933954 snd: 1572428934726`
