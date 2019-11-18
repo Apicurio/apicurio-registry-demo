@@ -25,8 +25,7 @@ class MergeTransformer implements Transformer<String, LogInput, KeyValue<String,
 
     @Override
     public KeyValue<String, Log.LogMerge> transform(String key, LogInput log) {
-        String identifier = log.getIdentifier().toString();
-        Log.LogMerge merge = store.delete(identifier); // get + remove
+        Log.LogMerge merge = store.delete(key); // get + remove
         if (merge != null) {
             merge = Log.LogMerge.newBuilder(merge)
                                 .setSnd(log.getTimestamp())
@@ -34,12 +33,12 @@ class MergeTransformer implements Transformer<String, LogInput, KeyValue<String,
 
             logger.info("Merged logs: {}", merge);
 
-            return new KeyValue<>(identifier, merge);
+            return new KeyValue<>(key, merge);
         } else {
             merge = Log.LogMerge.newBuilder()
                                 .setFst(log.getTimestamp())
                                 .build();
-            store.put(identifier, merge);
+            store.put(key, merge);
             return null; // skip
         }
     }

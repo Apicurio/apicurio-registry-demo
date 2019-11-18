@@ -23,7 +23,6 @@ import static io.apicurio.registry.demo.utils.PropertiesUtil.property;
 
 import java.io.ByteArrayInputStream;
 import java.util.Properties;
-import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import javax.ws.rs.WebApplicationException;
 
@@ -64,11 +63,10 @@ public class TestMain {
 
         try (KafkaProducer<String, LogInput> producer = new KafkaProducer<>(properties)) {
 
-            String key1 = UUID.randomUUID().toString();
+            String key1 = "log1";
             LogInput input1 = LogInput.newBuilder()
                                       .setLine("Some log ...")
                                       .setTimestamp(System.currentTimeMillis())
-                                      .setIdentifier("log1")
                                       .build();
             producer.send(
                 new ProducerRecord<>(ApplicationImpl.INPUT_TOPIC, key1, input1),
@@ -81,11 +79,10 @@ public class TestMain {
                 }
             );
 
-            String key2 = UUID.randomUUID().toString();
+            String key2 = "log1";
             LogInput input2 = LogInput.newBuilder()
                                       .setLine("Some log #2 ...")
                                       .setTimestamp(System.currentTimeMillis())
-                                      .setIdentifier("log1")
                                       .build();
             producer.send(
                 new ProducerRecord<>(ApplicationImpl.INPUT_TOPIC, key2, input2),

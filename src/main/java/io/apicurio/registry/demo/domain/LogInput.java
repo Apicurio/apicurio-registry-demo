@@ -5,17 +5,16 @@
  */
 package io.apicurio.registry.demo.domain;
 
-import org.apache.avro.generic.GenericArray;
+import org.apache.avro.message.BinaryMessageDecoder;
+import org.apache.avro.message.BinaryMessageEncoder;
+import org.apache.avro.message.SchemaStore;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
-import org.apache.avro.message.BinaryMessageEncoder;
-import org.apache.avro.message.BinaryMessageDecoder;
-import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class LogInput extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 2943448398923940976L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"LogInput\",\"namespace\":\"io.apicurio.registry.demo.domain\",\"fields\":[{\"name\":\"line\",\"type\":\"string\"},{\"name\":\"timestamp\",\"type\":[\"long\",\"null\"]},{\"name\":\"identifier\",\"type\":[\"string\",\"null\"]}]}");
+  private static final long serialVersionUID = 593939009577832190L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"LogInput\",\"namespace\":\"io.apicurio.registry.demo.domain\",\"fields\":[{\"name\":\"line\",\"type\":\"string\"},{\"name\":\"timestamp\",\"type\":[\"long\",\"null\"]}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -73,7 +72,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
 
   @Deprecated public java.lang.CharSequence line;
   @Deprecated public java.lang.Long timestamp;
-  @Deprecated public java.lang.CharSequence identifier;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -86,12 +84,10 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
    * All-args constructor.
    * @param line The new value for line
    * @param timestamp The new value for timestamp
-   * @param identifier The new value for identifier
    */
-  public LogInput(java.lang.CharSequence line, java.lang.Long timestamp, java.lang.CharSequence identifier) {
+  public LogInput(java.lang.CharSequence line, java.lang.Long timestamp) {
     this.line = line;
     this.timestamp = timestamp;
-    this.identifier = identifier;
   }
 
   public org.apache.avro.specific.SpecificData getSpecificData() { return MODEL$; }
@@ -101,7 +97,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
     switch (field$) {
     case 0: return line;
     case 1: return timestamp;
-    case 2: return identifier;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -112,7 +107,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
     switch (field$) {
     case 0: line = (java.lang.CharSequence)value$; break;
     case 1: timestamp = (java.lang.Long)value$; break;
-    case 2: identifier = (java.lang.CharSequence)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -149,23 +143,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
    */
   public void setTimestamp(java.lang.Long value) {
     this.timestamp = value;
-  }
-
-  /**
-   * Gets the value of the 'identifier' field.
-   * @return The value of the 'identifier' field.
-   */
-  public java.lang.CharSequence getIdentifier() {
-    return identifier;
-  }
-
-
-  /**
-   * Sets the value of the 'identifier' field.
-   * @param value the value to set.
-   */
-  public void setIdentifier(java.lang.CharSequence value) {
-    this.identifier = value;
   }
 
   /**
@@ -210,7 +187,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
 
     private java.lang.CharSequence line;
     private java.lang.Long timestamp;
-    private java.lang.CharSequence identifier;
 
     /** Creates a new Builder */
     private Builder() {
@@ -231,10 +207,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
         this.timestamp = data().deepCopy(fields()[1].schema(), other.timestamp);
         fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
-      if (isValidValue(fields()[2], other.identifier)) {
-        this.identifier = data().deepCopy(fields()[2].schema(), other.identifier);
-        fieldSetFlags()[2] = other.fieldSetFlags()[2];
-      }
     }
 
     /**
@@ -250,10 +222,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
       if (isValidValue(fields()[1], other.timestamp)) {
         this.timestamp = data().deepCopy(fields()[1].schema(), other.timestamp);
         fieldSetFlags()[1] = true;
-      }
-      if (isValidValue(fields()[2], other.identifier)) {
-        this.identifier = data().deepCopy(fields()[2].schema(), other.identifier);
-        fieldSetFlags()[2] = true;
       }
     }
 
@@ -337,46 +305,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
       return this;
     }
 
-    /**
-      * Gets the value of the 'identifier' field.
-      * @return The value.
-      */
-    public java.lang.CharSequence getIdentifier() {
-      return identifier;
-    }
-
-
-    /**
-      * Sets the value of the 'identifier' field.
-      * @param value The value of 'identifier'.
-      * @return This builder.
-      */
-    public io.apicurio.registry.demo.domain.LogInput.Builder setIdentifier(java.lang.CharSequence value) {
-      validate(fields()[2], value);
-      this.identifier = value;
-      fieldSetFlags()[2] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'identifier' field has been set.
-      * @return True if the 'identifier' field has been set, false otherwise.
-      */
-    public boolean hasIdentifier() {
-      return fieldSetFlags()[2];
-    }
-
-
-    /**
-      * Clears the value of the 'identifier' field.
-      * @return This builder.
-      */
-    public io.apicurio.registry.demo.domain.LogInput.Builder clearIdentifier() {
-      identifier = null;
-      fieldSetFlags()[2] = false;
-      return this;
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public LogInput build() {
@@ -384,7 +312,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
         LogInput record = new LogInput();
         record.line = fieldSetFlags()[0] ? this.line : (java.lang.CharSequence) defaultValue(fields()[0]);
         record.timestamp = fieldSetFlags()[1] ? this.timestamp : (java.lang.Long) defaultValue(fields()[1]);
-        record.identifier = fieldSetFlags()[2] ? this.identifier : (java.lang.CharSequence) defaultValue(fields()[2]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -427,14 +354,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
       out.writeLong(this.timestamp);
     }
 
-    if (this.identifier == null) {
-      out.writeIndex(1);
-      out.writeNull();
-    } else {
-      out.writeIndex(0);
-      out.writeString(this.identifier);
-    }
-
   }
 
   @Override public void customDecode(org.apache.avro.io.ResolvingDecoder in)
@@ -451,15 +370,8 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
         this.timestamp = in.readLong();
       }
 
-      if (in.readIndex() != 0) {
-        in.readNull();
-        this.identifier = null;
-      } else {
-        this.identifier = in.readString(this.identifier instanceof Utf8 ? (Utf8)this.identifier : null);
-      }
-
     } else {
-      for (int i = 0; i < 3; i++) {
+      for (int i = 0; i < 2; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.line = in.readString(this.line instanceof Utf8 ? (Utf8)this.line : null);
@@ -471,15 +383,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
             this.timestamp = null;
           } else {
             this.timestamp = in.readLong();
-          }
-          break;
-
-        case 2:
-          if (in.readIndex() != 0) {
-            in.readNull();
-            this.identifier = null;
-          } else {
-            this.identifier = in.readString(this.identifier instanceof Utf8 ? (Utf8)this.identifier : null);
           }
           break;
 
