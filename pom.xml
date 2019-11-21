@@ -4,13 +4,13 @@
 
   <groupId>io.apicurio</groupId>
   <artifactId>apicurio-registry-demo</artifactId>
-  <version>1-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
 
   <name>Apicurio Service Registry Demo</name>
   <description>Apicurio Service Registry Demo</description>
 
   <properties>
-    <registry.version>1.0.3-SNAPSHOT</registry.version>
+    <registry.version>1.0.2.Final</registry.version>
     <avro.version>1.9.1</avro.version>
     <protobuf.version>3.10.0</protobuf.version>
     <slf4j.version>1.7.25</slf4j.version>
@@ -45,7 +45,15 @@
       <artifactId>slf4j-jdk14</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>io.apicurio</groupId>
       <artifactId>apicurio-registry-utils-serde</artifactId>
@@ -68,180 +76,5 @@
       <artifactId>kafka-streams</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <extensions>
-      <extension>
-        <groupId>kr.motd.maven</groupId>
-        <artifactId>os-maven-plugin</artifactId>
-        <version>${os-maven-plugin.version}</version>
-      </extension>
-    </extensions>
-
-    <plugins>
-      <plugin>
-        <groupId>org.xolstice.maven.plugins</groupId>
-        <artifactId>protobuf-maven-plugin</artifactId>
-        <version>${proto-plugin.version}</version>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-              <!--<goal>test-compile</goal>-->
-            </goals>
-            <configuration>
-              <protocArtifact>
-                com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
-              </protocArtifact>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>${maven-resource-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.basedir}/docker</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.build.directory}</directory>
-                  <includes>
-                    <include>**/*-runner.jar</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>avro</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.avro</groupId>
-            <artifactId>avro-maven-plugin</artifactId>
-            <version>${avro.version}</version>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>schema</goal>
-                </goals>
-                <configuration>
-                  <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
-                  <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>upload</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.apicurio</groupId>
-            <artifactId>apicurio-registry-maven-plugin</artifactId>
-            <version>${registry.version}</version>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>register</goal>
-                </goals>
-                <configuration>
-                  <registryUrl>http://localhost:8080</registryUrl>
-                  <artifactType>AVRO</artifactType>
-                  <artifacts>
-                    <schema1>${project.basedir}/schemas/schema1.avsc</schema1>
-                  </artifacts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.apicurio</groupId>
-            <artifactId>apicurio-registry-maven-plugin</artifactId>
-            <version>${registry.version}</version>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>test-update</goal>
-                </goals>
-                <configuration>
-                  <registryUrl>http://localhost:8080</registryUrl>
-                  <artifactType>AVRO</artifactType>
-                  <artifacts>
-                    <schema1>${project.basedir}/schemas/schema2.avsc</schema1>
-                  </artifacts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>download</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.apicurio</groupId>
-            <artifactId>apicurio-registry-maven-plugin</artifactId>
-            <version>${registry.version}</version>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>download</goal>
-                </goals>
-                <configuration>
-                  <registryUrl>http://localhost:8080</registryUrl>
-                  <ids>
-                    <param1>schema1</param1>
-                  </ids>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>
