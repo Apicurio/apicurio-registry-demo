@@ -17,13 +17,8 @@
 package io.apicurio.registry.demo.simple.avro;
 
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Properties;
-import java.util.concurrent.CompletionStage;
-
-import javax.ws.rs.WebApplicationException;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -36,11 +31,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.apicurio.registry.client.RegistryClient;
-import io.apicurio.registry.client.RegistryService;
 import io.apicurio.registry.demo.utils.PropertiesUtil;
-import io.apicurio.registry.rest.beans.ArtifactMetaData;
-import io.apicurio.registry.types.ArtifactType;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerializer;
 import io.apicurio.registry.utils.serde.AvroKafkaSerializer;
@@ -81,12 +72,6 @@ public class SimpleAvroProducerApp {
         String topicName = SimpleAvroAppConstants.TOPIC_NAME;
         String subjectName = SimpleAvroAppConstants.SUBJECT_NAME;
         
-        // Create the schema and then register it in the Service Registry
-        String registryUrl = props.getProperty(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM);
-        String artifactId = topicName;
-        createOrUpdateSchemaInServiceRegistry(registryUrl, artifactId, SimpleAvroAppConstants.SCHEMA);
-        
-        
         // Now start producing messages!
         int producedMessages = 0;
         try {
@@ -113,61 +98,5 @@ public class SimpleAvroProducerApp {
             producer.close();
             System.exit(1);
         }
-    }
-
-    /**
-     * Create the artifact in the registry (or update it if it already exists).
-     * @param registryUrl
-     * @param artifactId
-     * @param schema
-     * @throws Exception 
-     */
-    private static void createOrUpdateSchemaInServiceRegistry(String registryUrl, String artifactId,
-            String schema) throws Exception {
-        // Create a Service Registry client
-        RegistryService service = RegistryClient.cached(registryUrl);
-
-        LOGGER.info("---------------------------------------------------------");
-        LOGGER.info("=====> Creating artifact in the registry for Avro schema with ID: {}", artifactId);
-        try {
-            ByteArrayInputStream content = new ByteArrayInputStream(schema.getBytes(StandardCharsets.UTF_8));
-            CompletionStage<ArtifactMetaData> artifact = service.createArtifact(ArtifactType.AVRO, artifactId, content);
-            ArtifactMetaData metaData = artifact.toCompletableFuture().get();
-            LOGGER.info("=====> Successfully created Avro Schema artifact in Service Registry: {}", metaData);
-            LOGGER.info("---------------------------------------------------------");
-            return;
-        } catch (Exception t) {
-            if (!is409Error(t)) {
-                LOGGER.error("=====> Failed to create artifact in Service Registry!", t);
-                LOGGER.info("---------------------------------------------------------");
-                throw t;
-            }
-        }
-        
-        // If we get here, we need to update the artifact
-        try {
-            ByteArrayInputStream content = new ByteArrayInputStream(schema.getBytes(StandardCharsets.UTF_8));
-            CompletionStage<ArtifactMetaData> artifact = service.updateArtifact(artifactId, ArtifactType.AVRO, content);
-            ArtifactMetaData metaData = artifact.toCompletableFuture().get();
-            LOGGER.info("=====> Successfully **updated** Avro Schema artifact in Service Registry: {}", metaData);
-            LOGGER.info("---------------------------------------------------------");
-            return;
-        } catch (Exception t) {
-            if (!is409Error(t)) {
-                LOGGER.error("=====> Failed to create artifact in Service Registry!", t);
-                LOGGER.info("---------------------------------------------------------");
-                throw t;
-            }
-        }
-    }
-
-    private static boolean is409Error(Exception e) {
-        if (e.getCause() instanceof WebApplicationException) {
-            WebApplicationException wae = (WebApplicationException) e.getCause();
-            if (wae.getResponse().getStatus() == 409) {
-                return true;
-            }
-        }
-        return false;
     }
 }

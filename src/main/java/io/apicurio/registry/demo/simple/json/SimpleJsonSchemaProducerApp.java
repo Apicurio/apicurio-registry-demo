@@ -17,13 +17,8 @@
 package io.apicurio.registry.demo.simple.json;
 
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Properties;
-import java.util.concurrent.CompletionStage;
-
-import javax.ws.rs.WebApplicationException;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -33,13 +28,12 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.apicurio.registry.client.RegistryClient;
-import io.apicurio.registry.client.RegistryService;
 import io.apicurio.registry.demo.utils.PropertiesUtil;
-import io.apicurio.registry.rest.beans.ArtifactMetaData;
-import io.apicurio.registry.types.ArtifactType;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
+import io.apicurio.registry.utils.serde.AbstractKafkaSerializer;
 import io.apicurio.registry.utils.serde.JsonSchemaKafkaSerializer;
+import io.apicurio.registry.utils.serde.strategy.FindLatestIdStrategy;
+import io.apicurio.registry.utils.serde.strategy.SimpleTopicIdStrategy;
 
 /**
  * Kafka application that does the following:
@@ -66,19 +60,15 @@ public class SimpleJsonSchemaProducerApp {
 
         // Configure Service Registry location and ID strategies
         props.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, "http://localhost:8080");
+        props.putIfAbsent(AbstractKafkaSerializer.REGISTRY_ARTIFACT_ID_STRATEGY_CONFIG_PARAM, SimpleTopicIdStrategy.class.getName());
+        props.putIfAbsent(AbstractKafkaSerializer.REGISTRY_GLOBAL_ID_STRATEGY_CONFIG_PARAM, FindLatestIdStrategy.class.getName());
         props.putIfAbsent(JsonSchemaKafkaSerializer.REGISTRY_JSON_SCHEMA_SERIALIZER_VALIDATION_ENABLED, Boolean.TRUE);
-
+        
         // Create the Kafka producer
         Producer<Object, Message> producer = new KafkaProducer<>(props);
 
         String topicName = SimpleJsonSchemaAppConstants.TOPIC_NAME;
         String subjectName = SimpleJsonSchemaAppConstants.SUBJECT_NAME;
-        
-        // Create the schema and then register it in the Service Registry
-        String registryUrl = props.getProperty(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM);
-        String artifactId = topicName;
-        createOrUpdateSchemaInServiceRegistry(registryUrl, artifactId, SimpleJsonSchemaAppConstants.SCHEMA);
-        
         
         // Now start producing messages!
         int producedMessages = 0;
@@ -105,61 +95,5 @@ public class SimpleJsonSchemaProducerApp {
             producer.close();
             System.exit(1);
         }
-    }
-
-    /**
-     * Create the artifact in the registry (or update it if it already exists).
-     * @param registryUrl
-     * @param artifactId
-     * @param schema
-     * @throws Exception 
-     */
-    private static void createOrUpdateSchemaInServiceRegistry(String registryUrl, String artifactId,
-            String schema) throws Exception {
-        // Create a Service Registry client
-        RegistryService service = RegistryClient.cached(registryUrl);
-
-        LOGGER.info("---------------------------------------------------------");
-        LOGGER.info("=====> Creating artifact in the registry for JSON Schema with ID: {}", artifactId);
-        try {
-            ByteArrayInputStream content = new ByteArrayInputStream(schema.getBytes(StandardCharsets.UTF_8));
-            CompletionStage<ArtifactMetaData> artifact = service.createArtifact(ArtifactType.AVRO, artifactId, content);
-            ArtifactMetaData metaData = artifact.toCompletableFuture().get();
-            LOGGER.info("=====> Successfully created JSON Schema artifact in Service Registry: {}", metaData);
-            LOGGER.info("---------------------------------------------------------");
-            return;
-        } catch (Exception t) {
-            if (!is409Error(t)) {
-                LOGGER.error("=====> Failed to create artifact in Service Registry!", t);
-                LOGGER.info("---------------------------------------------------------");
-                throw t;
-            }
-        }
-        
-        // If we get here, we need to update the artifact
-        try {
-            ByteArrayInputStream content = new ByteArrayInputStream(schema.getBytes(StandardCharsets.UTF_8));
-            CompletionStage<ArtifactMetaData> artifact = service.updateArtifact(artifactId, ArtifactType.AVRO, content);
-            ArtifactMetaData metaData = artifact.toCompletableFuture().get();
-            LOGGER.info("=====> Successfully **updated** JSON Schema artifact in Service Registry: {}", metaData);
-            LOGGER.info("---------------------------------------------------------");
-            return;
-        } catch (Exception t) {
-            if (!is409Error(t)) {
-                LOGGER.error("=====> Failed to create artifact in Service Registry!", t);
-                LOGGER.info("---------------------------------------------------------");
-                throw t;
-            }
-        }
-    }
-
-    private static boolean is409Error(Exception e) {
-        if (e.getCause() instanceof WebApplicationException) {
-            WebApplicationException wae = (WebApplicationException) e.getCause();
-            if (wae.getResponse().getStatus() == 409) {
-                return true;
-            }
-        }
-        return false;
     }
 }
