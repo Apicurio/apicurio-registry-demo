@@ -8,7 +8,7 @@
 
 `mvn clean install`
 
-* Download and run Kafka (also set KAFKA_HOME environment variable)
+* [Download](https://kafka.apache.org/downloads) and run Kafka 2.3 (also set KAFKA_HOME environment variable)
 
 * Create the demo Kafka Topic
 
@@ -20,11 +20,11 @@
 
 * Run demo Producer App
 
-`mvn exec:java -Dexec.mainClass="io.apicurio.registry.demo.ProducerApplication"`
+`mvn package exec:java -Dexec.mainClass="io.apicurio.registry.demo.ProducerApplication"`
 
 * Run demo Consumer App
 
-`mvn exec:java -Dexec.mainClass="io.apicurio.registry.demo.ConsumerApplication"`
+`mvn package exec:java -Dexec.mainClass="io.apicurio.registry.demo.ConsumerApplication"`
 
 ## What does the demo do / show-case
 
