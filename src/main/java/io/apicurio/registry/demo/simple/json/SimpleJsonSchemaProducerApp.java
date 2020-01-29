@@ -32,6 +32,7 @@ import io.apicurio.registry.demo.utils.PropertiesUtil;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerializer;
 import io.apicurio.registry.utils.serde.JsonSchemaKafkaSerializer;
+import io.apicurio.registry.utils.serde.JsonSchemaSerDeConstants;
 import io.apicurio.registry.utils.serde.strategy.FindLatestIdStrategy;
 import io.apicurio.registry.utils.serde.strategy.SimpleTopicIdStrategy;
 
@@ -62,7 +63,7 @@ public class SimpleJsonSchemaProducerApp {
         props.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, "http://localhost:8080");
         props.putIfAbsent(AbstractKafkaSerializer.REGISTRY_ARTIFACT_ID_STRATEGY_CONFIG_PARAM, SimpleTopicIdStrategy.class.getName());
         props.putIfAbsent(AbstractKafkaSerializer.REGISTRY_GLOBAL_ID_STRATEGY_CONFIG_PARAM, FindLatestIdStrategy.class.getName());
-        props.putIfAbsent(JsonSchemaKafkaSerializer.REGISTRY_JSON_SCHEMA_SERIALIZER_VALIDATION_ENABLED, Boolean.TRUE);
+        props.putIfAbsent(JsonSchemaSerDeConstants.REGISTRY_JSON_SCHEMA_VALIDATION_ENABLED, Boolean.TRUE);
         
         // Create the Kafka producer
         Producer<Object, Message> producer = new KafkaProducer<>(props);

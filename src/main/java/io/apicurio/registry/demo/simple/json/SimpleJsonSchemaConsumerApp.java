@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import io.apicurio.registry.demo.utils.PropertiesUtil;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
 import io.apicurio.registry.utils.serde.JsonSchemaKafkaDeserializer;
+import io.apicurio.registry.utils.serde.JsonSchemaSerDeConstants;
 
 /**
  * Kafka application that does the following:
@@ -62,7 +63,7 @@ public class SimpleJsonSchemaConsumerApp {
 
         // Configure the deserializer
         props.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, "http://localhost:8080");
-        props.putIfAbsent(JsonSchemaKafkaDeserializer.REGISTRY_JSON_SCHEMA_DESERIALIZER_VALIDATION_ENABLED, Boolean.TRUE);
+        props.putIfAbsent(JsonSchemaSerDeConstants.REGISTRY_JSON_SCHEMA_VALIDATION_ENABLED, Boolean.TRUE);
 
         // Create the Kafka Consumer
         KafkaConsumer<Long, Message> consumer = new KafkaConsumer<>(props);
