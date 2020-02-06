@@ -16,7 +16,7 @@
 
 * Run two instances of registry
 
-`java -jar -Dquarkus.profile=dev /Users/alesj/projects/redhat/apicurio-registry/storage/streams/target/apicurio-registry-storage-streams-1.0.3-SNAPSHOT-runner.jar`
+`java -jar -Dquarkus.profile=dev /Users/alesj/projects/redhat/apicurio-registry/storage/streams/target/apicurio-registry-storage-streams-1.1.1-SNAPSHOT-runner.jar`
 
 `java -jar -Dquarkus.profile=dev -Dquarkus.http.port=8081 -D%dev.registry.streams.topology.application.server=localhost:9001 /Users/alesj/projects/redhat/apicurio-registry/storage/streams/target/apicurio-registry-storage-streams-1.0.3-SNAPSHOT-runner.jar`
 
@@ -88,7 +88,7 @@ Run script to setup topics: `./demo_setup.sh docker`
 
 Start single Registry: 
 
-`docker run -p 8080:8080 -e KAFKA_BOOTSTRAP_SERVERS=kafka:9092 -e APPLICATION_ID=demo_app_1 --link kafka apicurio/apicurio-registry-streams`
+`docker run -p 8080:8080 -e QUARKUS_PROFILE=prod -e KAFKA_BOOTSTRAP_SERVERS=kafka:9092 -e APPLICATION_ID=demo_app_1 --link kafka apicurio/apicurio-registry-streams`
 
 ## Running things with Docker-compose
 

@@ -124,9 +124,11 @@ spec:
         app: registry
     spec:
       containers:
-        - image: alesj/apicurio-registry-streams
+        - image: apicurio/apicurio-registry-streams
           name: registry
           env:
+            - name: QUARKUS_PROFILE
+              value: prod
             - name: KAFKA_BOOTSTRAP_SERVERS
               value: my-cluster-kafka-bootstrap.kafka:9092
             - name: APPLICATION_ID
