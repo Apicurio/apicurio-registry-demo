@@ -112,6 +112,8 @@ Cleanup: `docker rm -f zookeeper kafka registry1 registry2 demo`
 
 You need to have `minikube` and `kubectl` installed locally. 
 
+* remove any previous `minikube` instance
+
 * simply run our `strimzi.sh` script.
 
 * grab minikube IP: `minikube ip` --> <MINIKUBE_IP>
