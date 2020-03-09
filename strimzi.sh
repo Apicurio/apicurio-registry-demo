@@ -1,6 +1,6 @@
 minikube start --memory="8000m"
 kubectl create namespace kafka
-curl -L https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.14.0/strimzi-cluster-operator-0.14.0.yaml \
+curl -L https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.16.2/strimzi-cluster-operator-0.16.2.yaml \
   | sed 's/namespace: .*/namespace: kafka/' \
   | kubectl apply -f - -n kafka
 kubectl apply -f kubernetes/resources.yaml

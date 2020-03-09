@@ -124,7 +124,7 @@ spec:
         app: registry
     spec:
       containers:
-        - image: apicurio/apicurio-registry-streams
+        - image: apicurio/apicurio-registry-streams:latest-snapshot
           name: registry
           env:
             - name: QUARKUS_PROFILE
@@ -133,12 +133,12 @@ spec:
               value: my-cluster-kafka-bootstrap.kafka:9092
             - name: APPLICATION_ID
               value: registry_id
-            - name: POD_IP
+            - name: APPLICATION_SERVER_HOST
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            - name: APPLICATION_SERVER
-              value: "$(POD_IP):9000"
+            - name: APPLICATION_SERVER_PORT
+              value: "9000"
           resources:
             limits:
               memory: "1000Mi"
