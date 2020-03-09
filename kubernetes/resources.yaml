@@ -139,9 +139,31 @@ spec:
                   fieldPath: status.podIP
             - name: APPLICATION_SERVER_PORT
               value: "9000"
+            - name: QUARKUS_LOG_LEVEL
+              value: "INFO"
           resources:
             limits:
               memory: "1000Mi"
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
 
 ---
 apiVersion: v1
