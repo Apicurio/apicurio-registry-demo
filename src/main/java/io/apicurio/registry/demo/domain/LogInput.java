@@ -102,7 +102,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
   }
 
   // Used by DatumReader.  Applications should not call.
-  @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: line = (java.lang.CharSequence)value$; break;
@@ -306,7 +305,6 @@ public class LogInput extends org.apache.avro.specific.SpecificRecordBase implem
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public LogInput build() {
       try {
         LogInput record = new LogInput();

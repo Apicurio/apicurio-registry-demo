@@ -17,7 +17,8 @@ class MergeTransformer implements Transformer<String, LogInput, KeyValue<String,
 
     private KeyValueStore<String, Log.LogMerge> store;
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void init(ProcessorContext context) {
         //noinspection unchecked
         store = (KeyValueStore<String, Log.LogMerge>) context.getStateStore(ApplicationImpl.LOG_STORE);
