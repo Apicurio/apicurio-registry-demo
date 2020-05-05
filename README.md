@@ -118,4 +118,5 @@ You need to have `minikube` and `kubectl` installed locally.
 
 * grab minikube IP: `minikube ip` --> <MINIKUBE_IP>
 
-* run TestMain with `-Dboostrap.servers=<MINIKUBE_IP>:32100 -Dregistry.url.1=<MINIKUBE_IP>:30080 -Dregistry.url.2=<MINIKUBE_IP>:30080`
+* run TestMain with `-Dbootstrap.servers=<MINIKUBE_IP>:32100 -Dregistry.url.1=<MINIKUBE_IP>:30080 -Dregistry.url.2=<MINIKUBE_IP>:30080`
+* e.g. mvn exec:java -Dexec.mainClass="io.apicurio.registry.demo.Main" -Dbootstrap.servers=192.168.39.204:32100 -Dregistry.url.1=192.168.39.204:30080 -Dregistry.url.2=192.168.39.204:30080
