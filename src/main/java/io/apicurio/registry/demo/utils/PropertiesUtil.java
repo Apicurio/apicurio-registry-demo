@@ -7,7 +7,8 @@ import java.util.Properties;
  */
 public class PropertiesUtil {
     public static Properties properties(String[] args) {
-        Properties properties = new Properties(System.getProperties());
+        Properties properties = new Properties();
+        properties.putAll(System.getProperties());
         for (String arg : args) {
             if (arg.contains("=")) {
                 String[] split = arg.split("=");
