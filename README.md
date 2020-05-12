@@ -28,6 +28,10 @@
 
 `https://github.com/alesj/registry-demo/blob/master/src/test/java/io/apicurio/registry/test/TestMain.java`
 
+* Simple cURL command
+
+`curl -d "{"foo":"bar"}" -H "Content-Type: application/json" -H "X-Registry-ArtifactType: JSON" -H "X-Registry-ArtifactId: qwerty" http://localhost:8080/api/artifacts`
+
 ## What does the demo do / show-case
 
 Demo runs two clustered instances of registry, with its Streams storage. 
