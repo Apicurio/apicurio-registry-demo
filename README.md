@@ -30,7 +30,7 @@
 
 * Simple cURL command
 
-`curl -d "{"foo":"bar"}" -H "Content-Type: application/json" -H "X-Registry-ArtifactType: JSON" -H "X-Registry-ArtifactId: qwerty" http://localhost:8080/api/artifacts`
+`curl -d '{"foo":"bar"}' -H "Content-Type: application/json" -H "X-Registry-ArtifactType: JSON" -H "X-Registry-ArtifactId: qwerty" http://localhost:8080/api/artifacts`
 
 ## What does the demo do / show-case
 
