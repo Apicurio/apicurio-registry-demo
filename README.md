@@ -28,9 +28,11 @@
 
 `https://github.com/alesj/registry-demo/blob/master/src/test/java/io/apicurio/registry/test/TestMain.java`
 
-* Simple cURL command
+* Simple cURL commands (create and update artifact)
 
 `curl -d '{"foo":"bar"}' -H "Content-Type: application/json" -H "X-Registry-ArtifactType: JSON" -H "X-Registry-ArtifactId: qwerty" http://localhost:8080/api/artifacts`
+
+`curl -X PUT -d "{"title":"baz"}" -H "Content-Type: application/json" -H "X-Registry-ArtifactType: JSON" http://localhost:8080/api/artifacts/qwerty`
 
 ## What does the demo do / show-case
 
