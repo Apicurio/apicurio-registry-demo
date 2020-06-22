@@ -16,19 +16,18 @@
 
 package io.apicurio.registry.demo.simple.json;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.CompletionStage;
-
-import javax.ws.rs.WebApplicationException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.apicurio.registry.client.RegistryClient;
 import io.apicurio.registry.client.RegistryService;
 import io.apicurio.registry.rest.beans.ArtifactMetaData;
+import io.apicurio.registry.rest.beans.IfExistsType;
 import io.apicurio.registry.types.ArtifactType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.WebApplicationException;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletionStage;
 
 /**
  * This command line application is used to register the schema used by the producer and consumer in the
@@ -45,7 +44,7 @@ public class SimpleJsonSchemaBootstrapper {
     private static RegistryService service; 
     static {
         // Create a Service Registry client
-        String registryUrl = "http://localhost:8080";
+        String registryUrl = "http://localhost:8080/api";
         service = RegistryClient.create(registryUrl);
     }
     
@@ -85,7 +84,7 @@ public class SimpleJsonSchemaBootstrapper {
         LOGGER.info("=====> Creating artifact in the registry for JSON Schema with ID: {}", artifactId);
         try {
             ByteArrayInputStream content = new ByteArrayInputStream(schema.getBytes(StandardCharsets.UTF_8));
-            CompletionStage<ArtifactMetaData> artifact = service.createArtifact(ArtifactType.JSON, artifactId, content);
+            CompletionStage<ArtifactMetaData> artifact = service.createArtifact(ArtifactType.JSON, artifactId, IfExistsType.RETURN, content);
             ArtifactMetaData metaData = artifact.toCompletableFuture().get();
             LOGGER.info("=====> Successfully created JSON Schema artifact in Service Registry: {}", metaData);
             LOGGER.info("---------------------------------------------------------");

@@ -6,6 +6,7 @@ import io.apicurio.registry.demo.ApplicationImpl;
 import io.apicurio.registry.demo.domain.LogInput;
 import io.apicurio.registry.demo.utils.PropertiesUtil;
 import io.apicurio.registry.rest.beans.ArtifactMetaData;
+import io.apicurio.registry.rest.beans.IfExistsType;
 import io.apicurio.registry.types.ArtifactType;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
 import io.apicurio.registry.utils.serde.AbstractKafkaSerializer;
@@ -19,12 +20,12 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.apicurio.registry.demo.utils.PropertiesUtil.property;
-
+import javax.ws.rs.WebApplicationException;
 import java.io.ByteArrayInputStream;
 import java.util.Properties;
 import java.util.concurrent.CompletionStage;
-import javax.ws.rs.WebApplicationException;
+
+import static io.apicurio.registry.demo.utils.PropertiesUtil.property;
 
 /**
  * @author Ales Justin
@@ -36,7 +37,7 @@ public class TestMain {
         Properties properties = PropertiesUtil.properties(args);
 
         // register schema
-        String registryUrl_1 = PropertiesUtil.property(properties, "registry.url.1", "http://localhost:8080"); // register against 1st node
+        String registryUrl_1 = PropertiesUtil.property(properties, "registry.url.1", "http://localhost:8080/api"); // register against 1st node
         try (RegistryService service = RegistryClient.create(registryUrl_1)) {
             String artifactId = ApplicationImpl.INPUT_TOPIC + "-value";
             try {
@@ -45,13 +46,14 @@ public class TestMain {
                 CompletionStage<ArtifactMetaData> csa = service.createArtifact(
                     ArtifactType.AVRO,
                     artifactId,
+                    IfExistsType.RETURN,
                     new ByteArrayInputStream(LogInput.SCHEMA$.toString().getBytes())
                 );
                 csa.toCompletableFuture().get();
             }
         }
 
-        String registryUrl_2 = PropertiesUtil.property(properties, "registry.url.2", "http://localhost:8081"); // use 2nd node
+        String registryUrl_2 = PropertiesUtil.property(properties, "registry.url.2", "http://localhost:8081/api"); // use 2nd node
         properties.put(
             CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG,
             property(properties, CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")

@@ -16,9 +16,9 @@
 
 * Run two instances of registry
 
-`java -jar -Dquarkus.profile=dev /Users/alesj/projects/redhat/apicurio-registry/storage/streams/target/apicurio-registry-storage-streams-1.1.1-SNAPSHOT-runner.jar`
+`java -jar -Dquarkus.profile=dev /Users/alesj/projects/redhat/apicurio-registry/storage/streams/target/apicurio-registry-storage-streams-1.2.3-SNAPSHOT-runner.jar`
 
-`java -jar -Dquarkus.profile=dev -Dquarkus.http.port=8081 -D%dev.registry.streams.topology.application.server=localhost:9001 /Users/alesj/projects/redhat/apicurio-registry/storage/streams/target/apicurio-registry-storage-streams-1.0.3-SNAPSHOT-runner.jar`
+`java -jar -Dquarkus.profile=dev -Dquarkus.http.port=8081 -D%dev.registry.streams.topology.application.server=localhost:9001 /Users/alesj/projects/redhat/apicurio-registry/storage/streams/target/apicurio-registry-storage-streams-1.2.3-SNAPSHOT-runner.jar`
 
 * Run demo's Main (from IDE)
 
@@ -62,7 +62,7 @@ e.g. how to register a schema
                   <goal>register</goal>
                 </goals>
                 <configuration>
-                  <registryUrl>http://localhost:8080</registryUrl>
+                  <registryUrl>http://localhost:8080/api</registryUrl>
                   <artifactType>AVRO</artifactType>
                   <artifacts>
                     <schema1>${project.basedir}/schemas/schema1.avsc</schema1>

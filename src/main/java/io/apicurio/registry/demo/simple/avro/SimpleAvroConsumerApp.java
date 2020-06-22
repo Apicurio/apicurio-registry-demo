@@ -16,10 +16,9 @@
 
 package io.apicurio.registry.demo.simple.avro;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Properties;
-
+import io.apicurio.registry.demo.utils.PropertiesUtil;
+import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
+import io.apicurio.registry.utils.serde.AvroKafkaDeserializer;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -29,9 +28,9 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.apicurio.registry.demo.utils.PropertiesUtil;
-import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
-import io.apicurio.registry.utils.serde.AvroKafkaDeserializer;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Properties;
 
 /**
  * Kafka application that does the following:
@@ -61,7 +60,7 @@ public class SimpleAvroConsumerApp {
         props.putIfAbsent(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroKafkaDeserializer.class.getName());
 
         // Configure Service Registry location
-        props.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, "http://localhost:8080");
+        props.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, "http://localhost:8080/api");
 
         // Create the Kafka Consumer
         KafkaConsumer<Long, GenericRecord> consumer = new KafkaConsumer<>(props);

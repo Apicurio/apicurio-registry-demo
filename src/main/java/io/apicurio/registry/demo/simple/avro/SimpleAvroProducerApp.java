@@ -17,9 +17,12 @@
 package io.apicurio.registry.demo.simple.avro;
 
 
-import java.util.Date;
-import java.util.Properties;
-
+import io.apicurio.registry.demo.utils.PropertiesUtil;
+import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
+import io.apicurio.registry.utils.serde.AbstractKafkaSerializer;
+import io.apicurio.registry.utils.serde.AvroKafkaSerializer;
+import io.apicurio.registry.utils.serde.strategy.FindBySchemaIdStrategy;
+import io.apicurio.registry.utils.serde.strategy.SimpleTopicIdStrategy;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
@@ -31,12 +34,8 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.apicurio.registry.demo.utils.PropertiesUtil;
-import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
-import io.apicurio.registry.utils.serde.AbstractKafkaSerializer;
-import io.apicurio.registry.utils.serde.AvroKafkaSerializer;
-import io.apicurio.registry.utils.serde.strategy.FindBySchemaIdStrategy;
-import io.apicurio.registry.utils.serde.strategy.SimpleTopicIdStrategy;
+import java.util.Date;
+import java.util.Properties;
 
 /**
  * Kafka application that does the following:
@@ -62,7 +61,7 @@ public class SimpleAvroProducerApp {
         props.putIfAbsent(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, AvroKafkaSerializer.class.getName());
 
         // Configure Service Registry location and ID strategies
-        props.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, "http://localhost:8080");
+        props.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, "http://localhost:8080/api");
         props.putIfAbsent(AbstractKafkaSerializer.REGISTRY_ARTIFACT_ID_STRATEGY_CONFIG_PARAM, SimpleTopicIdStrategy.class.getName());
         props.putIfAbsent(AbstractKafkaSerializer.REGISTRY_GLOBAL_ID_STRATEGY_CONFIG_PARAM, FindBySchemaIdStrategy.class.getName());
 

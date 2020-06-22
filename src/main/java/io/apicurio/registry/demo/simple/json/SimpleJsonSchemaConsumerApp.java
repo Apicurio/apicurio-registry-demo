@@ -16,11 +16,10 @@
 
 package io.apicurio.registry.demo.simple.json;
 
-import java.sql.Date;
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Properties;
-
+import io.apicurio.registry.demo.utils.PropertiesUtil;
+import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
+import io.apicurio.registry.utils.serde.JsonSchemaKafkaDeserializer;
+import io.apicurio.registry.utils.serde.JsonSchemaSerDeConstants;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -29,10 +28,10 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.apicurio.registry.demo.utils.PropertiesUtil;
-import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
-import io.apicurio.registry.utils.serde.JsonSchemaKafkaDeserializer;
-import io.apicurio.registry.utils.serde.JsonSchemaSerDeConstants;
+import java.sql.Date;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Properties;
 
 /**
  * Kafka application that does the following:
@@ -62,7 +61,7 @@ public class SimpleJsonSchemaConsumerApp {
         props.putIfAbsent(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonSchemaKafkaDeserializer.class.getName());
 
         // Configure the deserializer
-        props.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, "http://localhost:8080");
+        props.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, "http://localhost:8080/api");
         props.putIfAbsent(JsonSchemaSerDeConstants.REGISTRY_JSON_SCHEMA_VALIDATION_ENABLED, Boolean.TRUE);
 
         // Create the Kafka Consumer

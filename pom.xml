@@ -10,12 +10,12 @@
   <description>Apicurio Service Registry Demo</description>
 
   <properties>
-    <registry.version>1.1.2.Final</registry.version>
+    <registry.version>1.2.2.Final</registry.version>
     <avro.version>1.9.2</avro.version>
     <protobuf.version>3.11.1</protobuf.version>
     <slf4j.version>1.7.25</slf4j.version>
     <!-- Quarkus -->
-    <quarkus.version>1.3.2.Final</quarkus.version>
+    <quarkus.version>1.5.1.Final</quarkus.version>
     <!-- Proto -->
     <proto-plugin.version>0.6.1</proto-plugin.version>
     <os-maven-plugin.version>1.6.1</os-maven-plugin.version>
@@ -177,7 +177,7 @@
                   <goal>register</goal>
                 </goals>
                 <configuration>
-                  <registryUrl>http://localhost:8080</registryUrl>
+                  <registryUrl>http://localhost:8080/api</registryUrl>
                   <artifactType>AVRO</artifactType>
                   <artifacts>
                     <schema1>${project.basedir}/schemas/schema1.avsc</schema1>
@@ -204,7 +204,7 @@
                   <goal>test-update</goal>
                 </goals>
                 <configuration>
-                  <registryUrl>http://localhost:8080</registryUrl>
+                  <registryUrl>http://localhost:8080/api</registryUrl>
                   <artifactType>AVRO</artifactType>
                   <artifacts>
                     <schema1>${project.basedir}/schemas/schema2.avsc</schema1>
@@ -231,7 +231,7 @@
                   <goal>download</goal>
                 </goals>
                 <configuration>
-                  <registryUrl>http://localhost:8080</registryUrl>
+                  <registryUrl>http://localhost:8080/api</registryUrl>
                   <ids>
                     <param1>schema1</param1>
                   </ids>

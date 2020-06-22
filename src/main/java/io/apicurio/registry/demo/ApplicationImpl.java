@@ -27,12 +27,12 @@ import org.apache.kafka.streams.state.Stores;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.apicurio.registry.demo.utils.PropertiesUtil.property;
-
+import javax.enterprise.inject.Vetoed;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import javax.enterprise.inject.Vetoed;
+
+import static io.apicurio.registry.demo.utils.PropertiesUtil.property;
 
 /**
  * @author Ales Justin
@@ -57,7 +57,7 @@ public class ApplicationImpl implements Lifecycle {
             property(properties, StreamsConfig.APPLICATION_ID_CONFIG, "registry-demo")
         );
 
-        String registryUrl = property(properties, "registry.url", "http://localhost:8080");
+        String registryUrl = property(properties, "registry.url", "http://localhost:8080/api");
         RegistryService service = RegistryClient.cached(registryUrl);
 
         StreamsBuilder builder = new StreamsBuilder();
