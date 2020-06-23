@@ -16,10 +16,10 @@
 
 package io.apicurio.registry.demo.simple.avro;
 
-import io.apicurio.registry.demo.utils.PropertiesUtil;
-import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
-import io.apicurio.registry.utils.serde.AvroKafkaDeserializer;
-import org.apache.avro.generic.GenericRecord;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Properties;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -28,9 +28,11 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Properties;
+import io.apicurio.registry.demo.utils.PropertiesUtil;
+import io.apicurio.registry.utils.serde.AbstractKafkaSerDe;
+import io.apicurio.registry.utils.serde.AvroKafkaDeserializer;
+import io.apicurio.registry.utils.serde.avro.AvroDatumProvider;
+import io.apicurio.registry.utils.serde.avro.ReflectAvroDatumProvider;
 
 /**
  * Kafka application that does the following:
@@ -61,9 +63,10 @@ public class SimpleAvroConsumerApp {
 
         // Configure Service Registry location
         props.putIfAbsent(AbstractKafkaSerDe.REGISTRY_URL_CONFIG_PARAM, "http://localhost:8080/api");
+        props.putIfAbsent(AvroDatumProvider.REGISTRY_AVRO_DATUM_PROVIDER_CONFIG_PARAM, ReflectAvroDatumProvider.class.getName());
 
         // Create the Kafka Consumer
-        KafkaConsumer<Long, GenericRecord> consumer = new KafkaConsumer<>(props);
+        KafkaConsumer<Long, Greeting> consumer = new KafkaConsumer<>(props);
 
         // Subscribe to the topic
         LOGGER.info("=====> Subscribing to topic: {}", SimpleAvroAppConstants.TOPIC_NAME);
@@ -73,12 +76,12 @@ public class SimpleAvroConsumerApp {
         LOGGER.info("=====> Consuming messages...");
         try {
             while (Boolean.TRUE) {
-                final ConsumerRecords<Long, GenericRecord> records = consumer.poll(Duration.ofSeconds(1));
+                final ConsumerRecords<Long, Greeting> records = consumer.poll(Duration.ofSeconds(1));
                 if (records.count() == 0) {
                     // Do nothing - no messages waiting.
                 } else records.forEach(record -> {
-                    LOGGER.info("=====> CONSUMED: {} {} {} {}", record.topic(),
-                            record.partition(), record.offset(), record.value());
+                    Greeting greeting = record.value();
+                    LOGGER.info("=====> CONSUMED: {} message={} at {}", record.topic(), greeting.getMessage(), greeting.getTimestamp().toString());
                 });
             }
         } finally {
