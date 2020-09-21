@@ -16,18 +16,19 @@
 
 package io.apicurio.registry.demo.simple.avro;
 
-import io.apicurio.registry.client.RegistryClient;
-import io.apicurio.registry.client.RegistryService;
-import io.apicurio.registry.rest.beans.ArtifactMetaData;
-import io.apicurio.registry.rest.beans.IfExistsType;
-import io.apicurio.registry.types.ArtifactType;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
+import javax.ws.rs.WebApplicationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.WebApplicationException;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.CompletionStage;
+import io.apicurio.registry.client.RegistryRestClient;
+import io.apicurio.registry.client.RegistryRestClientFactory;
+import io.apicurio.registry.rest.beans.ArtifactMetaData;
+import io.apicurio.registry.rest.beans.IfExistsType;
+import io.apicurio.registry.types.ArtifactType;
 
 /**
  * This command line application is used to register the schema used by the producer and consumer in the
@@ -41,11 +42,11 @@ public class SimpleAvroBootstrapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleAvroBootstrapper.class);
     
-    private static RegistryService service; 
+    private static RegistryRestClient client; 
     static {
         // Create a Service Registry client
         String registryUrl = "http://localhost:8080/api";
-        service = RegistryClient.create(registryUrl);
+        client = RegistryRestClientFactory.create(registryUrl);
     }
     
     public static final void main(String [] args) throws Exception {
@@ -68,7 +69,6 @@ public class SimpleAvroBootstrapper {
     
             LOGGER.info("\n\n--------------\nBootstrapping complete.\n--------------\n");
         } finally {
-            service.close();
         }
     }
 
@@ -84,8 +84,7 @@ public class SimpleAvroBootstrapper {
         LOGGER.info("=====> Creating artifact in the registry for Avro Schema with ID: {}", artifactId);
         try {
             ByteArrayInputStream content = new ByteArrayInputStream(schema.getBytes(StandardCharsets.UTF_8));
-            CompletionStage<ArtifactMetaData> artifact = service.createArtifact(ArtifactType.AVRO, artifactId, IfExistsType.RETURN, content);
-            ArtifactMetaData metaData = artifact.toCompletableFuture().get();
+            ArtifactMetaData metaData = client.createArtifact(ArtifactType.AVRO, artifactId, IfExistsType.RETURN, content);
             LOGGER.info("=====> Successfully created Avro Schema artifact in Service Registry: {}", metaData);
             LOGGER.info("---------------------------------------------------------");
         } catch (Exception t) {

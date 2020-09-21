@@ -1,6 +1,6 @@
 package io.apicurio.registry.demo;
 
-import io.apicurio.registry.client.RegistryClient;
+import io.apicurio.registry.client.CompatibleClient;
 import io.apicurio.registry.client.RegistryService;
 import io.apicurio.registry.demo.domain.Log;
 import io.apicurio.registry.demo.domain.LogInput;
@@ -38,6 +38,7 @@ import static io.apicurio.registry.demo.utils.PropertiesUtil.property;
  * @author Ales Justin
  */
 @Vetoed
+@SuppressWarnings("deprecation")
 public class ApplicationImpl implements Lifecycle {
     private static final Logger log = LoggerFactory.getLogger(ApplicationImpl.class);
 
@@ -58,7 +59,7 @@ public class ApplicationImpl implements Lifecycle {
         );
 
         String registryUrl = property(properties, "registry.url", "http://localhost:8080/api");
-        RegistryService service = RegistryClient.cached(registryUrl);
+        RegistryService service = CompatibleClient.createCompatible(registryUrl);
 
         StreamsBuilder builder = new StreamsBuilder();
 

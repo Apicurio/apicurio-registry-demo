@@ -40,8 +40,7 @@ import java.util.Properties;
 /**
  * Kafka application that does the following:
  * 
- * 1) Registers the Avro schema in the Service Registry
- * 2) Produces a message every 5s on the topic
+ * 1) Produces a message every 5s on the topic
  * 
  * @author eric.wittmann@gmail.com
  */
